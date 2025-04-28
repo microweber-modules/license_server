@@ -9,6 +9,53 @@ use MicroweberPackages\Modules\LicenseServer\Models\License;
 
 class LegacyLicenseController extends ApiBaseController
 {
+
+
+    public function validateLocal(Request $request)
+    {
+
+
+        $localKey = $request->get('local_key', false);
+        $relType = $request->get('rel_type', false);
+
+        if (!$localKey) {
+            return $this->respondWithError('Invalid local key');
+        }
+
+        if (!$relType) {
+            return $this->respondWithError('Invalid rel type');
+        }
+
+        $findLicense = License::where('license_key', $localKey)->first();
+        if (!$findLicense) {
+            return $this->respondWithError('Invalid license key');
+        }
+        $data = [];
+
+        $licenseStatus = 'inactive';
+        $active = false;
+        if ($findLicense->status == 'active' || $findLicense->status == 'Active') {
+            $active = true;
+            $licenseStatus = 'active';
+        }
+        if ($findLicense->is_lifetime) {
+            $active = true;
+            $licenseStatus = 'active';
+        }
+
+
+        $data[$relType] = [
+            'rel_type' => $relType,
+            'active' => $licenseStatus == 'active',
+            'status' =>$licenseStatus,
+            'local_key_hash' => md5($findLicense->license_key),
+
+        ];
+        return response()->json($data);
+    }
+
+
+
     public function validateLegacy(Request $request)
     {
         $localKey = $request->get('local_key', false);

@@ -9,4 +9,7 @@ Route::name('license_server.')
     \Illuminate\Support\Facades\Route::any('validate-legacy', 'LegacyLicenseController@validateLegacy')
         ->name('validate-legacy');
 
+    \Illuminate\Support\Facades\Route::any('validate-license', 'LegacyLicenseController@validateLocal')
+        ->name('validate-licence-local');
+
 });
