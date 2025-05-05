@@ -32,15 +32,15 @@ class LegacyLicenseController extends ApiBaseController
         }
         $data = [];
 
-        $licenseStatus = 'inactive';
+        $licenseStatus = 'Inactive';
         $active = false;
-        if ($findLicense->status == 'active' || $findLicense->status == 'Active') {
+        if (strtolower($findLicense->status)  == 'active') {
             $active = true;
-            $licenseStatus = 'active';
+            $licenseStatus = 'Active';
         }
         if ($findLicense->is_lifetime) {
             $active = true;
-            $licenseStatus = 'active';
+            $licenseStatus = 'Active';
         }
 
 
@@ -48,6 +48,7 @@ class LegacyLicenseController extends ApiBaseController
             'rel_type' => $relType,
             'active' => $licenseStatus == 'active',
             'status' =>$licenseStatus,
+            'servers' => ['*'],
             'local_key_hash' => md5($findLicense->license_key),
 
         ];
